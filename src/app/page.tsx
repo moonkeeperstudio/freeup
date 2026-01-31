@@ -1,64 +1,110 @@
+"use client";
+
 import Image from "next/image";
+import { Button } from "@/components/ui/Button";
+import { useState } from "react";
 
 export default function Home() {
+  const [selectedDate, setSelectedDate] = useState("Jan 27");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const dates = ["Jan 27", "Jan 28", "Jan 29"];
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen bg-primary px-8 py-6">
+      {/* Header */}
+      <header className="flex items-center justify-between gap-6 flex-wrap">
+        {/* Logo */}
+        <div className="flex-shrink-0">
+          <Image
+            src="/logo.svg"
+            alt="FreeUp"
+            width={190}
+            height={43}
+            priority
+            className="h-10 w-auto"
+          />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+
+        {/* Search & Date Selector & Create Event */}
+        <div className="flex items-center gap-4 flex-1 justify-between flex-wrap">
+          {/* Search Bar */}
+          <div className="relative flex-1 min-w-[280px] max-w-md">
+            <input
+              type="text"
+              placeholder="Type Place or Timezone"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full px-4 py-3 pr-12 rounded-lg bg-white text-primary placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-logo-pink transition-shadow"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            <button
+              type="button"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-logo-pink hover:text-[#e86d8f] transition-colors"
+              aria-label="Search"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2.5}
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+                />
+              </svg>
+            </button>
+          </div>
+
+          {/* Date Selector */}
+          <div className="flex items-center gap-2">
+            {dates.map((date) => (
+              <button
+                key={date}
+                onClick={() => setSelectedDate(date)}
+                className={`px-6 py-3 rounded-lg font-medium transition-colors ${
+                  selectedDate === date
+                    ? "bg-logo-pink text-white"
+                    : "bg-transparent text-white hover:bg-white/10"
+                }`}
+              >
+                {date}
+              </button>
+            ))}
+          </div>
+
+          {/* Create Event Button */}
+          <Button
+            variant="solid"
+            size="normal"
+            leftIcon={
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2.5}
+                stroke="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 4.5v15m7.5-7.5h-15"
+                />
+              </svg>
+            }
           >
-            Documentation
-          </a>
+            Create Event
+          </Button>
         </div>
+      </header>
+
+      {/* Main Content Area */}
+      <main className="mt-12">
+        {/* Time grid and content will go here */}
       </main>
     </div>
   );

@@ -4,7 +4,7 @@ import { forwardRef } from "react";
 
 /* FreeUp Button — Style Guide 08
    Padding: horizontal 5× font size, vertical 1× font size
-   Primary style uses Secondary brand color (#F2994A)
+   Primary button color: #FF7EA3 (logo pink)
    Variants: solid (default), outline, icon-text, icon-only
 */
 
@@ -41,17 +41,17 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const base =
-      "inline-flex items-center justify-center gap-2 font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-70";
+      "inline-flex items-center justify-center gap-2 font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-logo-pink focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-70";
 
     const variantClasses: Record<ButtonVariant, string> = {
       solid:
-        "bg-secondary text-white hover:bg-[#e08a42] active:bg-[#f5a95c] disabled:bg-disabled-bg disabled:text-disabled",
+        "bg-logo-pink text-white hover:bg-[#e86d8f] active:bg-[#ff92b0] disabled:bg-disabled-bg disabled:text-disabled",
       outline:
-        "border-2 border-secondary text-secondary bg-transparent hover:bg-secondary hover:text-white hover:border-[#e08a42] active:bg-[#f5a95c] active:border-[#f5a95c] disabled:border-disabled disabled:text-disabled disabled:bg-transparent",
+        "border-2 border-logo-pink text-logo-pink bg-transparent hover:bg-logo-pink hover:text-white hover:border-[#e86d8f] active:bg-[#ff92b0] active:border-[#ff92b0] disabled:border-disabled disabled:text-disabled disabled:bg-transparent",
       "icon-text":
-        "bg-secondary text-white hover:bg-[#e08a42] active:bg-[#f5a95c] disabled:bg-disabled-bg disabled:text-disabled",
+        "bg-logo-pink text-white hover:bg-[#e86d8f] active:bg-[#ff92b0] disabled:bg-disabled-bg disabled:text-disabled",
       "icon-only":
-        "rounded-full bg-secondary text-white hover:bg-[#e08a42] active:bg-[#f5a95c] disabled:bg-disabled-bg disabled:text-disabled p-2",
+        "rounded-full bg-logo-pink text-white hover:bg-[#e86d8f] active:bg-[#ff92b0] disabled:bg-disabled-bg disabled:text-disabled p-2",
     };
 
     const widthClass = fullWidth ? "w-full" : "";

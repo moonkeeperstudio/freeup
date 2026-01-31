@@ -1,0 +1,11 @@
+[00:00:02.168] Server  LOG     ✓ Ready in 1515ms
+[00:00:06.469] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:06.635] Browser WARN    Image with src "http://localhost:3000/vercel.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:01:22.597] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:01:22.739] Browser WARN    Image with src "http://localhost:3000/vercel.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:02:45.999] Server  LOG     ✓ Compiled in 195ms
+[00:11:06.010] Server  LOG     ✓ Compiled in 49ms
+[00:11:08.402] Server  LOG     ✓ Compiled in 88ms
+[00:11:10.140] Server  LOG     ✓ Compiled in 63ms
+[00:11:10.779] Server  LOG     ✓ Compiled in 84ms
+[00:11:11.281] Server  LOG     ✓ Compiled in 66ms
