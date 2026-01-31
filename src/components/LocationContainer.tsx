@@ -48,7 +48,6 @@ const SLOT_COUNT = 25; // 24 hours + next day 12am
 export function LocationContainer({
   timezoneId,
   locationLabel,
-  selectedDateIso,
   utcWindowStartMs,
   utcWindowEndMs,
   selectedRangeUtc,
@@ -64,9 +63,15 @@ export function LocationContainer({
   const [dragStartSlot, setDragStartSlot] = useState<number | null>(null);
   const [dragEndSlot, setDragEndSlot] = useState<number | null>(null);
   const dragEndSlotRef = useRef<number | null>(null);
-  dragEndSlotRef.current = dragEndSlot;
-  const touchStartPos = useRef<{ x: number; y: number; time: number } | null>(null);
+  const touchStartPos = useRef<{ x: number; y: number; time: number } | null>(
+    null
+  );
   const hasMovedRef = useRef(false);
+
+  // Update ref outside of render
+  useEffect(() => {
+    dragEndSlotRef.current = dragEndSlot;
+  }, [dragEndSlot]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -95,8 +100,17 @@ export function LocationContainer({
     const isNewDay =
       prevLocal != null &&
       local.toFormat("yyyy-MM-dd") !== prevLocal.toFormat("yyyy-MM-dd");
-    const nextDayLabel = isNewDay ? local.toFormat("EEE MMM d").toUpperCase() : null;
-    const hourNum = hour === 0 ? "12" : hour === 12 ? "12" : hour < 12 ? `${hour}` : `${hour - 12}`;
+    const nextDayLabel = isNewDay
+      ? local.toFormat("EEE MMM d").toUpperCase()
+      : null;
+    const hourNum =
+      hour === 0
+        ? "12"
+        : hour === 12
+          ? "12"
+          : hour < 12
+            ? `${hour}`
+            : `${hour - 12}`;
     const ampm = hour < 12 ? "am" : "pm";
     return {
       index: i,
@@ -110,10 +124,22 @@ export function LocationContainer({
   });
 
   // Selection: use UTC-based percentages so lines align across all containers
-  const { rangeStartPercent, rangeEndPercent, hasSelection, startTimeLabel, endTimeLabel } = (() => {
+  const {
+    rangeStartPercent,
+    rangeEndPercent,
+    hasSelection,
+    startTimeLabel,
+    endTimeLabel,
+  } = (() => {
     if (!selectedRangeUtc) {
       if (dragStartSlot == null || dragEndSlot == null)
-        return { rangeStartPercent: 0, rangeEndPercent: 0, hasSelection: false, startTimeLabel: "", endTimeLabel: "" };
+        return {
+          rangeStartPercent: 0,
+          rangeEndPercent: 0,
+          hasSelection: false,
+          startTimeLabel: "",
+          endTimeLabel: "",
+        };
       const lo = Math.min(dragStartSlot, dragEndSlot);
       const hi = Math.max(dragStartSlot, dragEndSlot);
       // Get local time labels for start and end
@@ -129,18 +155,21 @@ export function LocationContainer({
         endTimeLabel: endLocal.toFormat("h:mm a"),
       };
     }
-    const startPercent =
-      Math.max(
-        0,
-        ((selectedRangeUtc.startUtc - utcWindowStartMs) / utcWindowDurationMs) * 100
-      );
-    const endPercent =
-      Math.min(
-        100,
-        ((selectedRangeUtc.endUtc - utcWindowStartMs) / utcWindowDurationMs) * 100
-      );
-    const startLocal = DateTime.fromMillis(selectedRangeUtc.startUtc).setZone(timezoneId);
-    const endLocal = DateTime.fromMillis(selectedRangeUtc.endUtc).setZone(timezoneId);
+    const startPercent = Math.max(
+      0,
+      ((selectedRangeUtc.startUtc - utcWindowStartMs) / utcWindowDurationMs) *
+        100
+    );
+    const endPercent = Math.min(
+      100,
+      ((selectedRangeUtc.endUtc - utcWindowStartMs) / utcWindowDurationMs) * 100
+    );
+    const startLocal = DateTime.fromMillis(selectedRangeUtc.startUtc).setZone(
+      timezoneId
+    );
+    const endLocal = DateTime.fromMillis(selectedRangeUtc.endUtc).setZone(
+      timezoneId
+    );
     return {
       rangeStartPercent: startPercent,
       rangeEndPercent: endPercent,
@@ -151,7 +180,9 @@ export function LocationContainer({
   })();
 
   const getSlotIndexFromEvent = useCallback(
-    (e: React.MouseEvent | MouseEvent | React.TouchEvent | TouchEvent): number | null => {
+    (
+      e: React.MouseEvent | MouseEvent | React.TouchEvent | TouchEvent
+    ): number | null => {
       const el = timelineRef.current;
       if (!el) return null;
       const rect = el.getBoundingClientRect();
@@ -169,10 +200,7 @@ export function LocationContainer({
       const width = rect.width;
       if (relativeX < 0 || relativeX > width) return null;
       const slotWidth = width / SLOT_COUNT;
-      const index = Math.min(
-        Math.floor(relativeX / slotWidth),
-        SLOT_COUNT - 1
-      );
+      const index = Math.min(Math.floor(relativeX / slotWidth), SLOT_COUNT - 1);
       return index;
     },
     []
@@ -194,14 +222,18 @@ export function LocationContainer({
     (e: React.TouchEvent) => {
       const touch = e.touches[0];
       if (!touch) return;
-      
+
       // Store initial touch position and time
-      touchStartPos.current = { x: touch.clientX, y: touch.clientY, time: Date.now() };
+      touchStartPos.current = {
+        x: touch.clientX,
+        y: touch.clientY,
+        time: Date.now(),
+      };
       hasMovedRef.current = false;
-      
+
       const index = getSlotIndexFromEvent(e);
       if (index == null) return;
-      
+
       // Start drag immediately - we'll cancel if it's a scroll
       setDragStartSlot(index);
       setDragEndSlot(index);
@@ -217,22 +249,22 @@ export function LocationContainer({
       const index = getSlotIndexFromEvent(e);
       if (index != null) setDragEndSlot(index);
     };
-    
+
     const handleTouchMove = (e: TouchEvent) => {
       const touch = e.touches[0];
       if (!touch) return;
-      
+
       if (!isDragging || !touchStartPos.current) return;
-      
+
       const deltaX = Math.abs(touch.clientX - touchStartPos.current.x);
       const deltaY = Math.abs(touch.clientY - touchStartPos.current.y);
       const deltaTime = Date.now() - touchStartPos.current.time;
-      
+
       // If user hasn't moved much yet, check if it's a fast swipe (scroll) or slow drag (select)
       if (!hasMovedRef.current && deltaTime < 150) {
         const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
         const speed = distance / deltaTime; // pixels per millisecond
-        
+
         // Fast swipe = scroll (speed > 1 px/ms), allow default scrolling
         if (speed > 1 && deltaX > 20) {
           setIsDragging(false);
@@ -243,34 +275,34 @@ export function LocationContainer({
           return;
         }
       }
-      
+
       // If we get here, it's a selection drag - prevent scrolling and update selection
       hasMovedRef.current = true;
       e.preventDefault();
       const index = getSlotIndexFromEvent(e);
       if (index != null) setDragEndSlot(index);
     };
-    
+
     const handleEnd = () => {
       const startSlot = dragStartSlot;
       const endSlot = dragEndSlotRef.current;
       const wasDragging = isDragging;
       const hasMoved = hasMovedRef.current;
-      
+
       setIsDragging(false);
       setDragStartSlot(null);
       setDragEndSlot(null);
       touchStartPos.current = null;
       hasMovedRef.current = false;
-      
+
       // Only create selection if we were actively dragging
       // For touch: require movement to distinguish from tap
       // For mouse: allow even without movement (click = single slot selection)
       if (!wasDragging || startSlot == null || endSlot == null) return;
-      
+
       // For touch events, require movement to avoid accidental selections
       if (touchStartPos.current !== null && !hasMoved) return;
-      
+
       const lo = Math.min(startSlot, endSlot);
       const hi = Math.max(startSlot, endSlot);
       // Map UTC window slots to UTC ms so selection aligns across all containers
@@ -278,15 +310,17 @@ export function LocationContainer({
       const endUtc = utcWindowStartMs + (hi + 1) * 60 * 60 * 1000;
       onSelectRange(startUtc, endUtc);
     };
-    
+
     if (isDragging || dragStartSlot != null) {
       document.addEventListener("mousemove", handleMouseMove);
       document.addEventListener("mouseup", handleEnd);
-      document.addEventListener("touchmove", handleTouchMove, { passive: false });
+      document.addEventListener("touchmove", handleTouchMove, {
+        passive: false,
+      });
       document.addEventListener("touchend", handleEnd);
       document.addEventListener("touchcancel", handleEnd);
     }
-    
+
     return () => {
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleEnd);
@@ -309,9 +343,7 @@ export function LocationContainer({
           <div className="text-4xl font-bold text-white mb-1">
             {currentTime.toFormat("h:mm a")}
           </div>
-          <div className="text-xl font-medium text-white">
-            {locationLabel}
-          </div>
+          <div className="text-xl font-medium text-white">{locationLabel}</div>
           <div className="text-sm text-white/70">{offsetStr}</div>
           <div className="text-sm text-white/60 mt-1">{dateStr}</div>
         </div>
@@ -345,6 +377,9 @@ export function LocationContainer({
           ref={timelineRef}
           role="slider"
           aria-label="Select time range"
+          aria-valuenow={dragEndSlot ?? 0}
+          aria-valuemin={0}
+          aria-valuemax={SLOT_COUNT - 1}
           tabIndex={0}
           className="flex gap-1 min-w-max relative select-none cursor-crosshair py-4"
           onMouseDown={handleMouseDown}
@@ -359,7 +394,8 @@ export function LocationContainer({
                 style={{
                   left: `${rangeStartPercent}%`,
                   width: `${rangeEndPercent - rangeStartPercent}%`,
-                  background: "linear-gradient(180deg, rgba(255, 255, 255, 0.01) 0%, rgba(255, 255, 255, 0.15) 100%)",
+                  background:
+                    "linear-gradient(180deg, rgba(255, 255, 255, 0.01) 0%, rgba(255, 255, 255, 0.15) 100%)",
                 }}
               />
               {/* Vertical line at start with time label */}
@@ -393,29 +429,42 @@ export function LocationContainer({
             </>
           )}
 
-          {hours.map(({ index, hour, hourNum, ampm, status, isDateTransition, nextDayLabel }) => (
-            <div
-              key={index}
-              className={`flex flex-col items-center min-w-[3rem] py-1 px-1 relative z-10 ${
-                isDateTransition ? "bg-white/10 rounded-lg" : ""
-              }`}
-            >
-              {nextDayLabel ? (
-                <span className="text-xs text-white/60 font-medium mb-1">
-                  {nextDayLabel}
-                </span>
-              ) : (
-                <div className="flex flex-col items-center mb-0.5">
-                  <span className="text-base text-white leading-tight">{hourNum}</span>
-                  <span className="text-xs text-white/70 leading-tight">{ampm}</span>
-                </div>
-              )}
+          {hours.map(
+            ({
+              index,
+              hourNum,
+              ampm,
+              status,
+              isDateTransition,
+              nextDayLabel,
+            }) => (
               <div
-                className={`w-2 h-2 rounded-full ${statusColors[status]}`}
-                title={`${hourNum} ${ampm}: ${status}`}
-              />
-            </div>
-          ))}
+                key={index}
+                className={`flex flex-col items-center min-w-[3rem] py-1 px-1 relative z-10 ${
+                  isDateTransition ? "bg-white/10 rounded-lg" : ""
+                }`}
+              >
+                {nextDayLabel ? (
+                  <span className="text-xs text-white/60 font-medium mb-1">
+                    {nextDayLabel}
+                  </span>
+                ) : (
+                  <div className="flex flex-col items-center mb-0.5">
+                    <span className="text-base text-white leading-tight">
+                      {hourNum}
+                    </span>
+                    <span className="text-xs text-white/70 leading-tight">
+                      {ampm}
+                    </span>
+                  </div>
+                )}
+                <div
+                  className={`w-2 h-2 rounded-full ${statusColors[status]}`}
+                  title={`${hourNum} ${ampm}: ${status}`}
+                />
+              </div>
+            )
+          )}
         </div>
       </div>
     </div>

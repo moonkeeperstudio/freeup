@@ -33,11 +33,7 @@ export function SearchBar({
 
   // Show dropdown when there are results
   useEffect(() => {
-    if (results.length > 0) {
-      setIsOpen(true);
-    } else {
-      setIsOpen(false);
-    }
+    setIsOpen(results.length > 0);
   }, [results]);
 
   // Reset highlighted index when results change
@@ -186,4 +182,3 @@ export function SearchBar({
     </div>
   );
 }
-
