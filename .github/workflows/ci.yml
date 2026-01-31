@@ -10,10 +10,15 @@ jobs:
   quality:
     name: Code Quality
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -24,11 +29,19 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Check code formatting
-        run: npm run format:check
+      - name: Auto-fix formatting with Prettier
+        run: npm run format
 
-      - name: Run ESLint
-        run: npm run lint
+      - name: Auto-fix linting with ESLint
+        run: npm run lint -- --fix
+
+      - name: Commit fixes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "style: auto-fix formatting and linting issues"
+          commit_user_name: "github-actions[bot]"
+          commit_user_email: "github-actions[bot]@users.noreply.github.com"
+          skip_dirty_check: false
 
       - name: Type check
         run: npm run type-check
@@ -44,6 +57,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref }}
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
