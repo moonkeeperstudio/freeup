@@ -18,8 +18,7 @@ const sizeClasses = {
 type ButtonVariant = "solid" | "outline" | "icon-text" | "icon-only";
 type ButtonSize = keyof typeof sizeClasses;
 
-export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   size?: ButtonSize;
   fullWidth?: boolean;
@@ -56,9 +55,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     const widthClass = fullWidth ? "w-full" : "";
     const sizeClass =
-      variant === "icon-only"
-        ? "p-2 rounded-full"
-        : sizeClasses[size];
+      variant === "icon-only" ? "p-2 rounded-full" : sizeClasses[size];
 
     return (
       <button
@@ -69,7 +66,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {variant === "icon-only" ? (
-          leftIcon ?? children
+          (leftIcon ?? children)
         ) : (
           <>
             {leftIcon}

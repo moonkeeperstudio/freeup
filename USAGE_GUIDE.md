@@ -10,11 +10,7 @@ The shareable state system allows you to easily share your application state via
 import { ShareableStateProvider } from "@/contexts/ShareableStateContext";
 
 export default function RootLayout({ children }) {
-  return (
-    <ShareableStateProvider>
-      {children}
-    </ShareableStateProvider>
-  );
+  return <ShareableStateProvider>{children}</ShareableStateProvider>;
 }
 ```
 
@@ -28,10 +24,10 @@ import { useSharedState } from "@/hooks/useSharedState";
 function MyComponent() {
   // ❌ Old way - not shareable
   const [timezone, setTimezone] = useState("UTC");
-  
+
   // ✅ New way - automatically shareable!
   const [timezone, setTimezone] = useSharedState("timezone", "UTC");
-  
+
   // Works exactly like useState
   setTimezone("America/New_York");
 }
@@ -43,16 +39,12 @@ function MyComponent() {
 import { ShareStateButton } from "@/components/ShareStateButton";
 
 function MyComponent() {
-  return (
-    <ShareStateButton 
-      variant="outline" 
-      size="normal" 
-    />
-  );
+  return <ShareStateButton variant="outline" size="normal" />;
 }
 ```
 
 That's it! The button will automatically:
+
 - Collect all state from `useSharedState` hooks
 - Create a shareable URL
 - Copy it to clipboard
@@ -71,19 +63,19 @@ import { ShareStateButton } from "@/components/ShareStateButton";
 export default function Settings() {
   const [theme, setTheme] = useSharedState("theme", "light");
   const [language, setLanguage] = useSharedState("language", "en");
-  
+
   return (
     <div>
       <select value={theme} onChange={(e) => setTheme(e.target.value)}>
         <option value="light">Light</option>
         <option value="dark">Dark</option>
       </select>
-      
+
       <select value={language} onChange={(e) => setLanguage(e.target.value)}>
         <option value="en">English</option>
         <option value="es">Spanish</option>
       </select>
-      
+
       <ShareStateButton />
     </div>
   );
@@ -110,19 +102,19 @@ export default function Preferences() {
     theme: "light",
     timezone: "UTC",
   });
-  
+
   const updatePref = (key: keyof UserPreferences, value: any) => {
-    setPrefs(prev => ({ ...prev, [key]: value }));
+    setPrefs((prev) => ({ ...prev, [key]: value }));
   };
-  
+
   return (
     <div>
-      <input 
-        type="checkbox" 
+      <input
+        type="checkbox"
         checked={prefs.notifications}
         onChange={(e) => updatePref("notifications", e.target.checked)}
       />
-      
+
       <ShareStateButton />
     </div>
   );
@@ -140,18 +132,21 @@ import { ShareStateButton } from "@/components/ShareStateButton";
 
 export default function MixedState() {
   // Shared state - will be included in share links
-  const [selectedDate, setSelectedDate] = useSharedState("selectedDate", "2026-01-31");
+  const [selectedDate, setSelectedDate] = useSharedState(
+    "selectedDate",
+    "2026-01-31"
+  );
   const [timezone, setTimezone] = useSharedState("timezone", "UTC");
-  
+
   // Regular state - NOT shared
   const [searchQuery, setSearchQuery] = useState("");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  
+
   return (
     <div>
       {/* selectedDate and timezone will be shared */}
       {/* searchQuery and isMenuOpen will NOT be shared */}
-      
+
       <ShareStateButton />
     </div>
   );
@@ -169,7 +164,7 @@ export default function SelectiveSharing() {
   const [userSettings, setUserSettings] = useSharedState("userSettings", {...});
   const [appConfig, setAppConfig] = useSharedState("appConfig", {...});
   const [secretData, setSecretData] = useSharedState("secretData", {...});
-  
+
   return (
     <div>
       {/* Only share userSettings and appConfig, NOT secretData */}
@@ -189,13 +184,9 @@ export default function CustomCallback() {
     console.log("Share URL generated:", url);
     // Could send to analytics, show a modal, etc.
   };
-  
+
   return (
-    <ShareStateButton 
-      onShare={handleShare}
-      variant="solid"
-      size="large"
-    />
+    <ShareStateButton onShare={handleShare} variant="solid" size="large" />
   );
 }
 ```
@@ -236,8 +227,8 @@ const [value, setValue] = useSharedState("uniqueKey", "initial");
 ```
 
 Just add:
+
 1. A unique key as the first parameter
 2. Import from `@/hooks/useSharedState` instead of `react`
 
 That's it! No other changes needed.
-

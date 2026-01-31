@@ -35,16 +35,16 @@ export function TimezoneDisplay({ timezone, onRemove }: TimezoneDisplayProps) {
           <p className="text-sm text-gray-500 mb-4">
             {timezone} (GMT{offsetStr})
           </p>
-          
+
           <div className="text-4xl font-bold text-logo-pink mb-2">
             {currentTime.toFormat("HH:mm:ss")}
           </div>
-          
+
           <p className="text-gray-600">
             {currentTime.toFormat("EEEE, MMMM d, yyyy")}
           </p>
         </div>
-        
+
         {onRemove && (
           <button
             onClick={onRemove}
@@ -71,4 +71,3 @@ export function TimezoneDisplay({ timezone, onRemove }: TimezoneDisplayProps) {
     </div>
   );
 }
-

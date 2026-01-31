@@ -8,7 +8,10 @@ interface DateSelectorProps {
   onDateChange: (date: DateTime) => void;
 }
 
-export function DateSelector({ selectedDate, onDateChange }: DateSelectorProps) {
+export function DateSelector({
+  selectedDate,
+  onDateChange,
+}: DateSelectorProps) {
   const dateInputRef = useRef<HTMLInputElement>(null);
 
   // Get today, tomorrow, and day after tomorrow
@@ -19,7 +22,11 @@ export function DateSelector({ selectedDate, onDateChange }: DateSelectorProps) 
   const quickDates = [
     { date: today, label: today.toFormat("MMM d"), subLabel: "Today" },
     { date: tomorrow, label: tomorrow.toFormat("MMM d"), subLabel: "Tomorrow" },
-    { date: dayAfterTomorrow, label: dayAfterTomorrow.toFormat("MMM d"), subLabel: dayAfterTomorrow.toFormat("ccc") },
+    {
+      date: dayAfterTomorrow,
+      label: dayAfterTomorrow.toFormat("MMM d"),
+      subLabel: dayAfterTomorrow.toFormat("ccc"),
+    },
   ];
 
   // Check if selected date is one of the quick dates
@@ -45,7 +52,7 @@ export function DateSelector({ selectedDate, onDateChange }: DateSelectorProps) 
           </div>
         </button>
       ))}
-      
+
       {/* Calendar Picker Button */}
       <button
         onClick={() => dateInputRef.current?.showPicker()}
@@ -60,7 +67,9 @@ export function DateSelector({ selectedDate, onDateChange }: DateSelectorProps) 
           <div className="flex items-center justify-center gap-2">
             <div className="flex flex-col items-center">
               <span>{selectedDate.toFormat("MMM d")}</span>
-              <span className="text-xs opacity-75 mt-0.5">{selectedDate.toFormat("ccc")}</span>
+              <span className="text-xs opacity-75 mt-0.5">
+                {selectedDate.toFormat("ccc")}
+              </span>
             </div>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -96,7 +105,7 @@ export function DateSelector({ selectedDate, onDateChange }: DateSelectorProps) 
           </div>
         )}
       </button>
-      
+
       {/* Hidden date input */}
       <input
         ref={dateInputRef}
@@ -113,4 +122,3 @@ export function DateSelector({ selectedDate, onDateChange }: DateSelectorProps) 
     </div>
   );
 }
-

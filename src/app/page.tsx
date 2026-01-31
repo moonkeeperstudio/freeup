@@ -29,7 +29,7 @@ export default function Home() {
     () => selectedDate.toISODate() || DateTime.now().toISODate()!,
     [selectedDate]
   );
-  
+
   /** Shared UTC window for all timelines so selection lines align vertically */
   const { utcWindowStartMs, utcWindowEndMs } = useMemo(() => {
     const start = new Date(selectedDateIso + "T00:00:00.000Z").getTime();
@@ -83,9 +83,9 @@ export default function Home() {
           />
 
           {/* Date Selector */}
-          <DateSelector 
-            selectedDate={selectedDate} 
-            onDateChange={setSelectedDate} 
+          <DateSelector
+            selectedDate={selectedDate}
+            onDateChange={setSelectedDate}
           />
 
           {/* Create Event Button */}

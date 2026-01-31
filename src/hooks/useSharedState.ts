@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect, useCallback } from 'react';
-import { useShareableStateContext } from '@/contexts/ShareableStateContext';
+import { useState, useEffect, useCallback } from "react";
+import { useShareableStateContext } from "@/contexts/ShareableStateContext";
 
 /**
  * A hook that combines shareable state with the context to automatically
  * register/unregister state keys and handle restoration from shared URLs
- * 
+ *
  * @param key - The key to store the state under
  * @param initialValue - The initial value if no stored value exists
  * @returns [state, setState] - Similar to useState
@@ -15,7 +15,8 @@ export function useSharedState<T>(
   key: string,
   initialValue: T
 ): [T, (value: T | ((prev: T) => T)) => void] {
-  const { registerState, unregisterState, isRestored } = useShareableStateContext();
+  const { registerState, unregisterState, isRestored } =
+    useShareableStateContext();
   const [state, setState] = useState<T>(initialValue);
   const [hasLoaded, setHasLoaded] = useState(false);
 
@@ -27,7 +28,7 @@ export function useSharedState<T>(
 
   // Load from localStorage once restoration is complete
   useEffect(() => {
-    if (!isRestored || typeof window === 'undefined' || hasLoaded) return;
+    if (!isRestored || typeof window === "undefined" || hasLoaded) return;
 
     try {
       const stored = localStorage.getItem(key);
@@ -44,7 +45,7 @@ export function useSharedState<T>(
 
   // Save to localStorage whenever state changes
   useEffect(() => {
-    if (typeof window === 'undefined' || !hasLoaded) return;
+    if (typeof window === "undefined" || !hasLoaded) return;
 
     try {
       localStorage.setItem(key, JSON.stringify(state));

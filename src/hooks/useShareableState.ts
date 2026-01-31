@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from "react";
 
 /**
  * A hook that works like useState but automatically syncs with localStorage
  * and can be shared via URL
- * 
+ *
  * @param key - The key to store the state under
  * @param initialValue - The initial value if no stored value exists
  * @returns [state, setState, isLoading] - Similar to useState but with loading state
@@ -19,7 +19,7 @@ export function useShareableState<T>(
 
   // Load from localStorage on mount
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
     try {
       const stored = localStorage.getItem(key);
@@ -36,7 +36,7 @@ export function useShareableState<T>(
 
   // Save to localStorage whenever state changes
   useEffect(() => {
-    if (typeof window === 'undefined' || isLoading) return;
+    if (typeof window === "undefined" || isLoading) return;
 
     try {
       localStorage.setItem(key, JSON.stringify(state));
@@ -52,4 +52,3 @@ export function useShareableState<T>(
 
   return [state, setStateWrapper, isLoading];
 }
-

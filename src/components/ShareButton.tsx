@@ -2,7 +2,11 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
-import { createShareLinkFromLocalStorage, createShareLinkFromAllLocalStorage, copyToClipboard } from "@/utils/urlState";
+import {
+  createShareLinkFromLocalStorage,
+  createShareLinkFromAllLocalStorage,
+  copyToClipboard,
+} from "@/utils/urlState";
 
 interface ShareButtonProps {
   /** Specific localStorage keys to include in the share link. If not provided, shares all localStorage */
@@ -11,21 +15,21 @@ interface ShareButtonProps {
   size?: "small" | "normal" | "large";
 }
 
-export function ShareButton({ 
-  localStorageKeys, 
-  variant = "outline", 
-  size = "normal" 
+export function ShareButton({
+  localStorageKeys,
+  variant = "outline",
+  size = "normal",
 }: ShareButtonProps) {
   const [copied, setCopied] = useState(false);
 
   const handleShare = async () => {
     // Create share link from localStorage
-    const shareUrl = localStorageKeys 
+    const shareUrl = localStorageKeys
       ? createShareLinkFromLocalStorage(localStorageKeys)
       : createShareLinkFromAllLocalStorage();
-    
+
     const success = await copyToClipboard(shareUrl);
-    
+
     if (success) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
@@ -75,4 +79,3 @@ export function ShareButton({
     </Button>
   );
 }
-

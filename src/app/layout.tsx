@@ -22,9 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} font-sans antialiased`}>
-        <ShareableStateProvider>
-          {children}
-        </ShareableStateProvider>
+        <ShareableStateProvider>{children}</ShareableStateProvider>
       </body>
     </html>
   );

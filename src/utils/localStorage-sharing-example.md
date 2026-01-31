@@ -22,7 +22,7 @@ export default function RootLayout() {
   // This will automatically check for shared localStorage in the URL
   // and restore it when the page loads
   useRestoreSharedLocalStorage();
-  
+
   return (
     // your layout...
   );
@@ -35,13 +35,16 @@ In any component, store data as you normally would:
 
 ```typescript
 // Store some data
-localStorage.setItem('userPreferences', JSON.stringify({
-  theme: 'dark',
-  language: 'en'
-}));
+localStorage.setItem(
+  "userPreferences",
+  JSON.stringify({
+    theme: "dark",
+    language: "en",
+  })
+);
 
-localStorage.setItem('selectedTimezone', 'America/New_York');
-localStorage.setItem('viewMode', 'grid');
+localStorage.setItem("selectedTimezone", "America/New_York");
+localStorage.setItem("viewMode", "grid");
 ```
 
 ### 3. Add a Share Button
@@ -52,7 +55,7 @@ Use the `ShareButton` component to create shareable links:
 import { ShareButton } from '@/components/ShareButton';
 
 // Option 1: Share specific localStorage keys
-<ShareButton 
+<ShareButton
   localStorageKeys={['userPreferences', 'selectedTimezone', 'viewMode']}
 />
 
@@ -67,9 +70,9 @@ import { ShareButton } from '@/components/ShareButton';
 Creates a shareable URL with specific localStorage keys.
 
 ```typescript
-import { createShareLinkFromLocalStorage } from '@/utils/urlState';
+import { createShareLinkFromLocalStorage } from "@/utils/urlState";
 
-const link = createShareLinkFromLocalStorage(['key1', 'key2']);
+const link = createShareLinkFromLocalStorage(["key1", "key2"]);
 // Returns: https://yoursite.com/?shared=eyJrZXkxIjoidmFsdWUxIiwia2V5MiI6InZhbHVlMiJ9
 ```
 
@@ -78,7 +81,7 @@ const link = createShareLinkFromLocalStorage(['key1', 'key2']);
 Creates a shareable URL with ALL localStorage data.
 
 ```typescript
-import { createShareLinkFromAllLocalStorage } from '@/utils/urlState';
+import { createShareLinkFromAllLocalStorage } from "@/utils/urlState";
 
 const link = createShareLinkFromAllLocalStorage();
 ```
@@ -88,7 +91,7 @@ const link = createShareLinkFromAllLocalStorage();
 Manually restore localStorage from URL (usually handled by the hook).
 
 ```typescript
-import { restoreLocalStorageFromUrl } from '@/utils/urlState';
+import { restoreLocalStorageFromUrl } from "@/utils/urlState";
 
 // Restore and clean URL
 const data = restoreLocalStorageFromUrl(true);
@@ -103,19 +106,19 @@ const data = restoreLocalStorageFromUrl(false);
 // Component A: User configures their view
 function ConfigPanel() {
   const [timezone, setTimezone] = useState('UTC');
-  
+
   useEffect(() => {
     // Store in localStorage
     localStorage.setItem('timezone', timezone);
   }, [timezone]);
-  
+
   return (
     <div>
       <select value={timezone} onChange={(e) => setTimezone(e.target.value)}>
         <option value="UTC">UTC</option>
         <option value="America/New_York">New York</option>
       </select>
-      
+
       <ShareButton localStorageKeys={['timezone']} />
     </div>
   );
@@ -127,13 +130,13 @@ function ConfigPanel() {
 
 function ViewPanel() {
   const [timezone, setTimezone] = useState('UTC');
-  
+
   useEffect(() => {
     // Read from localStorage (which was restored from URL)
     const saved = localStorage.getItem('timezone');
     if (saved) setTimezone(saved);
   }, []);
-  
+
   return <div>Current timezone: {timezone}</div>;
 }
 ```
@@ -148,4 +151,3 @@ function ViewPanel() {
   2. Decodes and parses the data
   3. Restores it to localStorage
   4. Removes the URL parameter (so the URL looks clean)
-

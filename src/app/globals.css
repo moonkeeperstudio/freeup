@@ -70,29 +70,67 @@ body {
 }
 
 /* Heading line-height: 1.1 × font size */
-h1 { font-size: 56px; line-height: 61.6px; }
-h2 { font-size: 48px; line-height: 52.8px; }
-h3 { font-size: 40px; line-height: 44px; }
-h4 { font-size: 32px; line-height: 35.2px; }
-h5 { font-size: 24px; line-height: 26.4px; }
-h6 { font-size: 20px; line-height: 22px; }
+h1 {
+  font-size: 56px;
+  line-height: 61.6px;
+}
+h2 {
+  font-size: 48px;
+  line-height: 52.8px;
+}
+h3 {
+  font-size: 40px;
+  line-height: 44px;
+}
+h4 {
+  font-size: 32px;
+  line-height: 35.2px;
+}
+h5 {
+  font-size: 24px;
+  line-height: 26.4px;
+}
+h6 {
+  font-size: 20px;
+  line-height: 22px;
+}
 
 /* Body text utilities (1.4 × font size) */
-.text-body-large   { font-size: 20px; line-height: 28px; }
-.text-body-medium  { font-size: 18px; line-height: 25.2px; }
-.text-body-normal  { font-size: 16px; line-height: 22.4px; }
-.text-body-small   { font-size: 14px; line-height: 19.6px; }
+.text-body-large {
+  font-size: 20px;
+  line-height: 28px;
+}
+.text-body-medium {
+  font-size: 18px;
+  line-height: 25.2px;
+}
+.text-body-normal {
+  font-size: 16px;
+  line-height: 22.4px;
+}
+.text-body-small {
+  font-size: 14px;
+  line-height: 19.6px;
+}
 
 /* Location container hover/active states */
 .location-container {
-  transition: background 0.3s ease, background-image 0.3s ease, border 0.3s ease,
-    transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    background 0.3s ease,
+    background-image 0.3s ease,
+    border 0.3s ease,
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 .location-container:hover,
 .location-container:active {
   background-image:
     linear-gradient(180deg, #121328 0%, #191a31 50%, #373958 100%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 1) 100%);
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.05) 0%,
+      rgba(255, 255, 255, 1) 100%
+    );
   background-origin: padding-box, border-box;
   background-clip: padding-box, border-box;
   border: 1px solid transparent;

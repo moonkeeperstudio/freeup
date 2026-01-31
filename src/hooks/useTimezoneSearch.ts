@@ -19,22 +19,22 @@ export function useTimezoneSearch(searchQuery: string) {
   // Create enriched timezone data with offsets and place names
   const timezoneData = useMemo<TimezoneData[]>(() => {
     const tzNames = Intl.supportedValuesOf("timeZone");
-    
+
     return tzNames.map((tz) => {
       // Get offset using Luxon
       const dt = DateTime.now().setZone(tz);
       const offset = dt.offset / 60; // Convert minutes to hours
       const offsetStr = offset >= 0 ? `+${offset}` : `${offset}`;
-      
+
       // Extract place names from timezone (e.g., "Asia/Manila" -> ["Asia", "Manila"])
       const parts = tz.split("/");
       const region = parts[0] || "";
       const city = parts[1]?.replace(/_/g, " ") || "";
       const subCity = parts[2]?.replace(/_/g, " ") || "";
-      
+
       // Get country names for this timezone
       const countryNames = getCountryNames(tz);
-      
+
       // Create searchable string with timezone, places, countries, and various offset formats
       const searchableString = [
         tz,
@@ -51,7 +51,7 @@ export function useTimezoneSearch(searchQuery: string) {
         .filter(Boolean)
         .join(" ")
         .toLowerCase();
-      
+
       return {
         id: tz,
         name: tz,
@@ -73,11 +73,11 @@ export function useTimezoneSearch(searchQuery: string) {
   // Initialize uFuzzy for fuzzy searching with more lenient settings
   const fuzzy = useMemo(() => {
     return new uFuzzy({
-      intraMode: 1,     // Allow more gaps between matched chars
-      intraIns: 1,      // Allow insertions within words
-      intraSub: 1,      // Allow substitutions within words
-      intraTrn: 1,      // Allow transpositions within words
-      intraDel: 1,      // Allow deletions within words
+      intraMode: 1, // Allow more gaps between matched chars
+      intraIns: 1, // Allow insertions within words
+      intraSub: 1, // Allow substitutions within words
+      intraTrn: 1, // Allow transpositions within words
+      intraDel: 1, // Allow deletions within words
     });
   }, []);
 
@@ -135,13 +135,12 @@ export function useTimezoneSearch(searchQuery: string) {
     return order.slice(0, 10).map((idx) => {
       const tz = timezoneData[info.idx[idx]];
       const offsetStr = tz.offset >= 0 ? `+${tz.offset}` : `${tz.offset}`;
-      
+
       // Create friendly display label
       const displayParts = [tz.city, tz.region].filter(Boolean);
-      const displayName = displayParts.length > 0 
-        ? displayParts.join(", ")
-        : tz.name;
-      
+      const displayName =
+        displayParts.length > 0 ? displayParts.join(", ") : tz.name;
+
       return {
         id: tz.id,
         label: displayName,
@@ -155,4 +154,3 @@ export function useTimezoneSearch(searchQuery: string) {
     timezoneData,
   };
 }
-
