@@ -33,8 +33,14 @@ export function useSharedState<T>(
     try {
       const stored = localStorage.getItem(key);
       if (stored) {
-        const parsed = JSON.parse(stored);
-        setState(parsed);
+        try {
+          // Try to parse as JSON first (handles objects and JSON-stringified primitives)
+          const parsed = JSON.parse(stored);
+          setState(parsed);
+        } catch {
+          // If parsing fails, it's a plain string value (backward compatibility)
+          setState(stored as T);
+        }
       }
     } catch (error) {
       console.error(`Error loading state for key "${key}":`, error);

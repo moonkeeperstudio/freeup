@@ -115,8 +115,9 @@ export function restoreLocalStorageFromUrl(
     // Restore to localStorage
     Object.entries(data).forEach(([key, value]) => {
       try {
-        // Always stringify to match what useSharedState expects
-        const stringValue = JSON.stringify(value);
+        // If value is an object, stringify it; otherwise store as-is
+        const stringValue =
+          typeof value === "string" ? value : JSON.stringify(value);
         localStorage.setItem(key, stringValue);
       } catch (error) {
         console.error(`Error restoring localStorage key "${key}":`, error);
