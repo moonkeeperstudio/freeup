@@ -70,9 +70,15 @@ export function useTimezoneSearch(searchQuery: string) {
     return timezoneData.map((tz) => tz.searchableString);
   }, [timezoneData]);
 
-  // Initialize uFuzzy for fuzzy searching
+  // Initialize uFuzzy for fuzzy searching with more lenient settings
   const fuzzy = useMemo(() => {
-    return new uFuzzy();
+    return new uFuzzy({
+      intraMode: 1,     // Allow more gaps between matched chars
+      intraIns: 1,      // Allow insertions within words
+      intraSub: 1,      // Allow substitutions within words
+      intraTrn: 1,      // Allow transpositions within words
+      intraDel: 1,      // Allow deletions within words
+    });
   }, []);
 
   // Popular timezones to show by default
