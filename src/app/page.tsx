@@ -3,15 +3,15 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { SearchBar, SearchResult } from "@/components/ui/SearchBar";
+import { DateSelector } from "@/components/ui/DateSelector";
 import { useState } from "react";
 import { useTimezoneSearch } from "@/hooks/useTimezoneSearch";
+import { DateTime } from "luxon";
 
 export default function Home() {
-  const [selectedDate, setSelectedDate] = useState("Jan 27");
+  const [selectedDate, setSelectedDate] = useState<DateTime>(DateTime.now());
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTimezone, setSelectedTimezone] = useState<string | null>(null);
-
-  const dates = ["Jan 27", "Jan 28", "Jan 29"];
 
   // Use custom hook for timezone search
   const { searchResults } = useTimezoneSearch(searchQuery);
@@ -50,21 +50,10 @@ export default function Home() {
           />
 
           {/* Date Selector */}
-          <div className="flex items-center gap-2">
-            {dates.map((date) => (
-              <button
-                key={date}
-                onClick={() => setSelectedDate(date)}
-                className={`px-6 py-3 rounded-lg font-medium transition-colors ${
-                  selectedDate === date
-                    ? "bg-logo-pink text-white"
-                    : "bg-transparent text-white hover:bg-white/10"
-                }`}
-              >
-                {date}
-              </button>
-            ))}
-          </div>
+          <DateSelector 
+            selectedDate={selectedDate} 
+            onDateChange={setSelectedDate} 
+          />
 
           {/* Create Event Button */}
           <Button
