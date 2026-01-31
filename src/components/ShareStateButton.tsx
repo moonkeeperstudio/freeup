@@ -3,12 +3,15 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { useShareableStateContext } from "@/contexts/ShareableStateContext";
-import { createShareLinkFromLocalStorage, copyToClipboard } from "@/utils/urlState";
+import {
+  createShareLinkFromLocalStorage,
+  copyToClipboard,
+} from "@/utils/urlState";
 
 interface ShareStateButtonProps {
   /** Optional specific state keys to share. If not provided, shares all registered state */
   stateKeys?: string[];
-  variant?: "solid" | "outline" | "ghost";
+  variant?: "solid" | "outline" | "icon-text" | "icon-only";
   size?: "small" | "normal" | "large";
   /** Optional callback when share is successful */
   onShare?: (url: string) => void;
@@ -18,9 +21,9 @@ interface ShareStateButtonProps {
  * A button that creates a shareable link from the current application state
  * Works with useSharedState to automatically share all registered state
  */
-export function ShareStateButton({ 
+export function ShareStateButton({
   stateKeys,
-  variant = "outline", 
+  variant = "outline",
   size = "normal",
   onShare,
 }: ShareStateButtonProps) {
@@ -30,16 +33,16 @@ export function ShareStateButton({
   const handleShare = async () => {
     // Use provided keys or get all registered keys
     const keysToShare = stateKeys || getRegisteredKeys();
-    
+
     if (keysToShare.length === 0) {
-      console.warn('No state keys to share');
+      console.warn("No state keys to share");
       return;
     }
 
     // Create share link from the registered state
     const shareUrl = createShareLinkFromLocalStorage(keysToShare);
     const success = await copyToClipboard(shareUrl);
-    
+
     if (success) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
@@ -90,4 +93,3 @@ export function ShareStateButton({
     </Button>
   );
 }
-
