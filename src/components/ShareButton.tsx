@@ -7,7 +7,7 @@ import { createShareLinkFromLocalStorage, createShareLinkFromAllLocalStorage, co
 interface ShareButtonProps {
   /** Specific localStorage keys to include in the share link. If not provided, shares all localStorage */
   localStorageKeys?: string[];
-  variant?: "solid" | "outline" | "ghost";
+  variant?: "solid" | "outline" | "icon-text" | "icon-only";
   size?: "small" | "normal" | "large";
 }
 
