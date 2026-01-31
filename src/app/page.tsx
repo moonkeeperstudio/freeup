@@ -4,28 +4,61 @@ import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { SearchBar, SearchResult } from "@/components/ui/SearchBar";
 import { DateSelector } from "@/components/ui/DateSelector";
-import { useState } from "react";
+import {
+  LocationContainer,
+  type SelectedTimeRangeUtc,
+} from "@/components/LocationContainer";
+import { useState, useCallback, useMemo } from "react";
 import { useTimezoneSearch } from "@/hooks/useTimezoneSearch";
 import { DateTime } from "luxon";
 
 export default function Home() {
   const [selectedDate, setSelectedDate] = useState<DateTime>(DateTime.now());
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedTimezone, setSelectedTimezone] = useState<string | null>(null);
+  const [selectedTimeRangeUtc, setSelectedTimeRangeUtc] =
+    useState<SelectedTimeRangeUtc | null>(null);
+  const [addedLocations, setAddedLocations] = useState<SearchResult[]>([
+    {
+      id: "Asia/Manila",
+      label: "Manila, Philippines",
+      subtitle: "Asia/Manila (GMT+8)",
+    },
+  ]);
 
-  // Use custom hook for timezone search
+  const selectedDateIso = useMemo(
+    () => selectedDate.toISODate() || DateTime.now().toISODate()!,
+    [selectedDate]
+  );
+  
+  /** Shared UTC window for all timelines so selection lines align vertically */
+  const { utcWindowStartMs, utcWindowEndMs } = useMemo(() => {
+    const start = new Date(selectedDateIso + "T00:00:00.000Z").getTime();
+    const end = start + 25 * 60 * 60 * 1000; // 25 hours
+    return { utcWindowStartMs: start, utcWindowEndMs: end };
+  }, [selectedDateIso]);
+
   const { searchResults } = useTimezoneSearch(searchQuery);
 
-  const handleSelectTimezone = (result: SearchResult) => {
-    setSearchQuery(""); // Clear the search bar
-    setSelectedTimezone(result.id); // Store the selected timezone ID (e.g., "Asia/Manila")
-    console.log("Selected timezone:", result.id);
-  };
+  const handleSelectTimezone = useCallback((result: SearchResult) => {
+    setSearchQuery("");
+    setAddedLocations((prev) => {
+      if (prev.some((loc) => loc.id === result.id)) return prev;
+      return [...prev, result];
+    });
+  }, []);
+
+  const handleRemoveLocation = useCallback((timezoneId: string) => {
+    setAddedLocations((prev) => prev.filter((loc) => loc.id !== timezoneId));
+  }, []);
+
+  const handleSelectRange = useCallback((startUtc: number, endUtc: number) => {
+    setSelectedTimeRangeUtc({ startUtc, endUtc });
+  }, []);
 
   return (
     <div className="min-h-screen bg-primary px-8 py-6">
       {/* Header */}
-      <header className="flex items-center justify-between gap-6 flex-wrap">
+      <header className="flex items-center justify-between gap-6 flex-wrap max-w-[1440px] mx-auto w-full">
         {/* Logo */}
         <div className="flex-shrink-0">
           <Image
@@ -81,9 +114,25 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Main Content Area */}
-      <main className="mt-12">
-        {/* Time grid and content will go here */}
+      {/* Main Content Area - Dynamic location containers */}
+      <main className="mt-12 flex flex-col gap-6 max-w-[1440px] mx-auto">
+        {addedLocations.map((loc) => (
+          <LocationContainer
+            key={loc.id}
+            timezoneId={loc.id}
+            locationLabel={loc.label}
+            selectedDateIso={selectedDateIso}
+            utcWindowStartMs={utcWindowStartMs}
+            utcWindowEndMs={utcWindowEndMs}
+            selectedRangeUtc={selectedTimeRangeUtc}
+            onSelectRange={handleSelectRange}
+            onRemove={
+              addedLocations.length > 1
+                ? () => handleRemoveLocation(loc.id)
+                : undefined
+            }
+          />
+        ))}
       </main>
     </div>
   );
