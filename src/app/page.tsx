@@ -2,13 +2,25 @@
 
 import Image from "next/image";
 import { Button } from "@/components/ui/Button";
+import { SearchBar, SearchResult } from "@/components/ui/SearchBar";
 import { useState } from "react";
+import { useTimezoneSearch } from "@/hooks/useTimezoneSearch";
 
 export default function Home() {
   const [selectedDate, setSelectedDate] = useState("Jan 27");
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedTimezone, setSelectedTimezone] = useState<string | null>(null);
 
   const dates = ["Jan 27", "Jan 28", "Jan 29"];
+
+  // Use custom hook for timezone search
+  const { searchResults } = useTimezoneSearch(searchQuery);
+
+  const handleSelectTimezone = (result: SearchResult) => {
+    setSearchQuery(""); // Clear the search bar
+    setSelectedTimezone(result.id); // Store the selected timezone ID (e.g., "Asia/Manila")
+    console.log("Selected timezone:", result.id);
+  };
 
   return (
     <div className="min-h-screen bg-primary px-8 py-6">
@@ -29,35 +41,13 @@ export default function Home() {
         {/* Search & Date Selector & Create Event */}
         <div className="flex items-center gap-4 flex-1 justify-between flex-wrap">
           {/* Search Bar */}
-          <div className="relative flex-1 min-w-[280px] max-w-md">
-            <input
-              type="text"
-              placeholder="Type Place or Timezone"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-4 py-3 pr-12 rounded-lg bg-white text-primary placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-logo-pink transition-shadow"
-            />
-            <button
-              type="button"
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-logo-pink hover:text-[#e86d8f] transition-colors"
-              aria-label="Search"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2.5}
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-                />
-              </svg>
-            </button>
-          </div>
+          <SearchBar
+            value={searchQuery}
+            onChange={setSearchQuery}
+            placeholder="Type Place or Timezone"
+            results={searchResults}
+            onSelectResult={handleSelectTimezone}
+          />
 
           {/* Date Selector */}
           <div className="flex items-center gap-2">
