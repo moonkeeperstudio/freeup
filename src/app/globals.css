@@ -1,26 +1,84 @@
 @import "tailwindcss";
 
+/* ============================================
+   FreeUp Design System — Style Guide Tokens
+   ============================================ */
+
 :root {
+  /* Brand */
+  --color-primary: #05061c;
+  --color-secondary: #f2994a;
+
+  /* State */
+  --color-available: #56ff5b;
+  --color-limited: #ffa04d;
+  --color-unavailable: #ff5656;
+
+  /* Logo */
+  --color-logo-purple: #b68cfd;
+  --color-logo-pink: #ff7ea3;
+  --color-logo-peach: #facabb;
+
+  /* UI (buttons disabled, etc.) */
+  --color-disabled: #9ca3af;
+  --color-disabled-bg: #e5e7eb;
+
+  /* Base */
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: var(--color-primary);
 }
 
 @theme inline {
+  /* Brand & state colors */
+  --color-primary: var(--color-primary);
+  --color-secondary: var(--color-secondary);
+  --color-available: var(--color-available);
+  --color-limited: var(--color-limited);
+  --color-unavailable: var(--color-unavailable);
+  --color-logo-purple: var(--color-logo-purple);
+  --color-logo-pink: var(--color-logo-pink);
+  --color-logo-peach: var(--color-logo-peach);
+  --color-disabled: var(--color-disabled);
+  --color-disabled-bg: var(--color-disabled-bg);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Typography — Inter (loaded in layout) */
+  --font-sans: var(--font-inter);
+
+  /* Heading scale (line-height 1.1 × size) */
+  --text-h1: 56px;
+  --text-h2: 48px;
+  --text-h3: 40px;
+  --text-h4: 32px;
+  --text-h5: 24px;
+  --text-h6: 20px;
+
+  /* Body scale (line-height 1.4 × size) */
+  --text-large: 20px;
+  --text-medium: 18px;
+  --text-normal: 16px;
+  --text-small: 14px;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.4;
 }
+
+/* Heading line-height: 1.1 × font size */
+h1 { font-size: 56px; line-height: 61.6px; }
+h2 { font-size: 48px; line-height: 52.8px; }
+h3 { font-size: 40px; line-height: 44px; }
+h4 { font-size: 32px; line-height: 35.2px; }
+h5 { font-size: 24px; line-height: 26.4px; }
+h6 { font-size: 20px; line-height: 22px; }
+
+/* Body text utilities (1.4 × font size) */
+.text-body-large   { font-size: 20px; line-height: 28px; }
+.text-body-medium  { font-size: 18px; line-height: 25.2px; }
+.text-body-normal  { font-size: 16px; line-height: 22.4px; }
+.text-body-small   { font-size: 14px; line-height: 19.6px; }
